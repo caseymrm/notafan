@@ -52,7 +52,7 @@ func watchCPU() {
 func main() {
 	go watchCPU()
 	app := menuet.App()
-	app.Name = "Why Awake?"
-	app.Label = "com.github.caseymrm.whyawake"
+	app.Name = "Not a Fan"
+	app.Label = "com.github.caseymrm.notafan"
 	app.RunApplication()
 }
