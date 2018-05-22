@@ -1,4 +1,4 @@
-BINARY=notafan
+BINARY=NotAFan.app/Contents/MacOS/notafan
 SOURCEDIR=.
 LIBDIR=../menuet ../go-smc
 SOURCES := $(shell find $(SOURCEDIR) $(LIBDIR) -name '*.go' -o -name '*.m' -o -name '*.h' -o -name '*.c') Makefile
