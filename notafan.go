@@ -101,8 +101,10 @@ func handleClicks(callback chan string) {
 		switch clicked {
 		case "celsius":
 			menuet.Defaults().SetBoolean("celsius", true)
+			setMenu()
 		case "fahrenheit":
 			menuet.Defaults().SetBoolean("celsius", false)
+			setMenu()
 		}
 	}
 }
