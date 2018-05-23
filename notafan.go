@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/caseymrm/go-pmset"
 	"github.com/caseymrm/go-smc"
 	"github.com/caseymrm/menuet"
 )
@@ -15,6 +16,7 @@ func watchCPU() {
 		temp := smc.ReadTemperature()
 		speeds := smc.ReadFanSpeeds()
 		smc.CloseSMC()
+		thermal := pmset.GetThermalConditions()
 		celsius := menuet.Defaults().Boolean("celsius")
 		text := fmt.Sprintf("%.01f°C", temp)
 		if !celsius {
@@ -28,6 +30,9 @@ func watchCPU() {
 			},
 			{
 				Text: text,
+			},
+			{
+				Text: fmt.Sprintf("Limit: %d%%", thermal["CPU_Speed_Limit"]),
 			},
 			{
 				Type: menuet.Separator,
@@ -57,7 +62,7 @@ func watchCPU() {
 			Type: menuet.Separator,
 		})
 		items = append(items, menuet.MenuItem{
-			Text: "Preferences",
+			Text: "Units",
 			Children: []menuet.MenuItem{
 				{
 					Text:     "Fahrenheit",
