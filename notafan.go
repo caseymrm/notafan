@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/caseymrm/go-pmset"
@@ -139,7 +140,29 @@ func monitorThermalChanges(channel chan bool) {
 	}
 }
 
+func checkUpdates() {
+	version := "v0.1"
+	ticker := time.NewTicker(24 * time.Hour)
+	for ; true; <-ticker.C {
+		release := menuet.CheckForNewRelease("caseymrm/notafan", version)
+		if release == nil {
+			continue
+		}
+		button := menuet.App().Alert(menuet.Alert{
+			MessageText:     "New version of Not a Fan available",
+			InformativeText: fmt.Sprintf("Looks like %s of Not a Fan is now available- you're running %s", release.TagName, version),
+			Buttons:         []string{"Update now", "Remind me later"},
+		})
+		if button == 0 {
+			err := menuet.UpdateApp(release)
+			if err != nil {
+				log.Printf("Unable to update app: %v", err)
+			}
+		}
+	}
+}
 func main() {
+	menuet.CheckForRestart()
 	thermalChannel := make(chan bool)
 	pmset.SubscribeThermalChanges(thermalChannel)
 	go monitorThermalChanges(thermalChannel)
@@ -150,5 +173,6 @@ func main() {
 	clickChannel := make(chan string)
 	go handleClicks(clickChannel)
 	app.Clicked = clickChannel
+	go checkUpdates()
 	app.RunApplication()
 }
