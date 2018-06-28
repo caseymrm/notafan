@@ -96,16 +96,14 @@ func watchCPU() {
 	}
 }
 
-func handleClicks(callback chan string) {
-	for clicked := range callback {
-		switch clicked {
-		case "celsius":
-			menuet.Defaults().SetBoolean("celsius", true)
-			setMenu()
-		case "fahrenheit":
-			menuet.Defaults().SetBoolean("celsius", false)
-			setMenu()
-		}
+func handleClick(clicked string) {
+	switch clicked {
+	case "celsius":
+		menuet.Defaults().SetBoolean("celsius", true)
+		setMenu()
+	case "fahrenheit":
+		menuet.Defaults().SetBoolean("celsius", false)
+		setMenu()
 	}
 }
 
@@ -147,9 +145,7 @@ func main() {
 	app := menuet.App()
 	app.Name = "Not a Fan"
 	app.Label = "com.github.caseymrm.notafan"
-	clickChannel := make(chan string)
-	go handleClicks(clickChannel)
-	app.Clicked = clickChannel
+	app.Clicked = handleClick
 	app.AutoUpdate.Version = "v0.1"
 	app.AutoUpdate.Repo = "caseymrm/notafan"
 	app.RunApplication()
