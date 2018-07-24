@@ -19,6 +19,48 @@ func setMenu() {
 	if !celsius {
 		text = fmt.Sprintf("%.01f°F", temp*1.8+32)
 	}
+	average := 0
+	for _, speed := range speeds {
+		average += speed
+	}
+	averageText := ""
+	if len(speeds) > 0 {
+		average = average / len(speeds)
+		averageText = fmt.Sprintf(" %d", average)
+	}
+	if lastCPULimit != 100 {
+		text += fmt.Sprintf(" %d%%", lastCPULimit)
+	}
+	menuet.App().SetMenuState(&menuet.MenuState{
+		Title: text + averageText,
+	})
+	menuet.App().MenuChanged()
+}
+
+func menuItems(key string) []menuet.MenuItem {
+	celsius := menuet.Defaults().Boolean("celsius")
+	if key == "units" {
+		return []menuet.MenuItem{
+			{
+				Text:  "Fahrenheit",
+				Key:   "fahrenheit",
+				State: !celsius,
+			},
+			{
+				Text:  "Celsius",
+				Key:   "celsius",
+				State: celsius,
+			},
+		}
+	}
+	smc.OpenSMC()
+	temp := smc.ReadTemperature()
+	speeds := smc.ReadFanSpeeds()
+	smc.CloseSMC()
+	text := fmt.Sprintf("%.01f°C", temp)
+	if !celsius {
+		text = fmt.Sprintf("%.01f°F", temp*1.8+32)
+	}
 	throttleText := "Not throttled"
 	if lastCPULimit != 100 {
 		throttleText = fmt.Sprintf("Throttled to %d%%", lastCPULimit)
@@ -43,18 +85,12 @@ func setMenu() {
 			FontSize: 9,
 		},
 	}
-	average := 0
 	for _, speed := range speeds {
-		average += speed
 		items = append(items, menuet.MenuItem{
 			Text: fmt.Sprintf("%d RPM", speed),
 		})
 	}
-	averageText := ""
-	if len(speeds) > 0 {
-		average = average / len(speeds)
-		averageText = fmt.Sprintf(" %d", average)
-	} else {
+	if len(speeds) == 0 {
 		items = append(items, menuet.MenuItem{
 			Text: fmt.Sprintf("No fans!"),
 		})
@@ -63,30 +99,14 @@ func setMenu() {
 		Type: menuet.Separator,
 	})
 	items = append(items, menuet.MenuItem{
-		Text: "Units",
-		Children: []menuet.MenuItem{
-			{
-				Text:     "Fahrenheit",
-				Callback: "fahrenheit",
-				State:    !celsius,
-			},
-			{
-				Text:     "Celsius",
-				Callback: "celsius",
-				State:    celsius,
-			},
-			{
-				Type: menuet.Separator,
-			},
-		},
+		Key:      "units",
+		Text:     "Units",
+		Children: true,
 	})
 	if lastCPULimit != 100 {
 		text += fmt.Sprintf(" %d%%", lastCPULimit)
 	}
-	menuet.App().SetMenuState(&menuet.MenuState{
-		Title: text + averageText,
-		Items: items,
-	})
+	return items
 }
 
 func watchCPU() {
@@ -146,6 +166,7 @@ func main() {
 	app.Name = "Not a Fan"
 	app.Label = "com.github.caseymrm.notafan"
 	app.Clicked = handleClick
+	app.MenuOpened = menuItems
 	app.AutoUpdate.Version = "v0.1"
 	app.AutoUpdate.Repo = "caseymrm/notafan"
 	app.RunApplication()
