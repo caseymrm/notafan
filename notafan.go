@@ -5,27 +5,23 @@ import (
 	"time"
 
 	"github.com/caseymrm/go-pmset"
-	"github.com/caseymrm/go-smc"
+	smc "github.com/caseymrm/go-smc"
 	"github.com/caseymrm/menuet"
 )
 
 func setMenu() {
-	smc.OpenSMC()
-	temp := smc.ReadTemperature()
-	speeds := smc.ReadFanSpeeds()
-	smc.CloseSMC()
 	celsius := menuet.Defaults().Boolean("celsius")
-	text := fmt.Sprintf("%.01f°C", temp)
+	text := fmt.Sprintf("%.01f°C", lastTemp)
 	if !celsius {
-		text = fmt.Sprintf("%.01f°F", temp*1.8+32)
+		text = fmt.Sprintf("%.01f°F", lastTemp*1.8+32)
 	}
 	average := 0
-	for _, speed := range speeds {
+	for _, speed := range lastSpeeds {
 		average += speed
 	}
 	averageText := ""
-	if len(speeds) > 0 {
-		average = average / len(speeds)
+	if len(lastSpeeds) > 0 {
+		average = average / len(lastSpeeds)
 		averageText = fmt.Sprintf(" %d", average)
 	}
 	if lastCPULimit != 100 {
@@ -53,13 +49,9 @@ func menuItems(key string) []menuet.MenuItem {
 			},
 		}
 	}
-	smc.OpenSMC()
-	temp := smc.ReadTemperature()
-	speeds := smc.ReadFanSpeeds()
-	smc.CloseSMC()
-	text := fmt.Sprintf("%.01f°C", temp)
+	text := fmt.Sprintf("%.01f°C", lastTemp)
 	if !celsius {
-		text = fmt.Sprintf("%.01f°F", temp*1.8+32)
+		text = fmt.Sprintf("%.01f°F", lastTemp*1.8+32)
 	}
 	throttleText := "Not throttled"
 	if lastCPULimit != 100 {
@@ -85,12 +77,12 @@ func menuItems(key string) []menuet.MenuItem {
 			FontSize: 9,
 		},
 	}
-	for _, speed := range speeds {
+	for _, speed := range lastSpeeds {
 		items = append(items, menuet.MenuItem{
 			Text: fmt.Sprintf("%d RPM", speed),
 		})
 	}
-	if len(speeds) == 0 {
+	if len(lastSpeeds) == 0 {
 		items = append(items, menuet.MenuItem{
 			Text: fmt.Sprintf("No fans!"),
 		})
@@ -109,20 +101,22 @@ func menuItems(key string) []menuet.MenuItem {
 	return items
 }
 
-func watchCPU() {
-	ticker := time.NewTicker(3 * time.Second)
-	for ; true; <-ticker.C {
-		setMenu()
-	}
+var lastTemp float64
+var lastSpeeds []int
+
+func readTempAndFanSpeeds() (float64, []int) {
+	smc.OpenSMC()
+	temp := smc.ReadTemperature()
+	speeds := smc.ReadFanSpeeds()
+	smc.CloseSMC()
+	return temp, speeds
 }
 
-func handleClick(clicked string) {
-	switch clicked {
-	case "celsius":
-		menuet.Defaults().SetBoolean("celsius", true)
-		setMenu()
-	case "fahrenheit":
-		menuet.Defaults().SetBoolean("celsius", false)
+func watchCPU() {
+	lastTemp, lastSpeeds = readTempAndFanSpeeds()
+	ticker := time.NewTicker(3 * time.Second)
+	for ; true; <-ticker.C {
+		lastTemp, lastSpeeds = readTempAndFanSpeeds()
 		setMenu()
 	}
 }
@@ -153,6 +147,17 @@ func monitorThermalChanges(channel chan bool) {
 			})
 		}
 		lastCPULimit = newLimit
+		setMenu()
+	}
+}
+
+func handleClick(clicked string) {
+	switch clicked {
+	case "celsius":
+		menuet.Defaults().SetBoolean("celsius", true)
+		setMenu()
+	case "fahrenheit":
+		menuet.Defaults().SetBoolean("celsius", false)
 		setMenu()
 	}
 }
