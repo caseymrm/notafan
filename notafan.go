@@ -130,23 +130,26 @@ func cpuSpeedLimit() int {
 
 func monitorThermalChanges(channel chan bool) {
 	lastCPULimit = cpuSpeedLimit()
+	lastNotification := time.Now()
 	for range channel {
 		newLimit := cpuSpeedLimit()
 		if newLimit == lastCPULimit {
 			continue
 		}
+		if lastNotification.Add(time.Second).After(time.Now()) {
+			continue
+		}
 		if newLimit == 100 {
 			menuet.App().Notification(menuet.Notification{
-				Title:   "CPU no longer throttled",
-				Message: fmt.Sprintf("Previously limited to %d%%", lastCPULimit),
+				Title: "CPU no longer throttled",
 			})
 		} else {
 			menuet.App().Notification(menuet.Notification{
-				Title:   "CPU being throttled",
-				Message: fmt.Sprintf("Limit to %d%%", newLimit),
+				Title: fmt.Sprintf("CPU being throttled to %d%%", newLimit),
 			})
 		}
 		lastCPULimit = newLimit
+		lastNotification = time.Now()
 		setMenu()
 	}
 }
