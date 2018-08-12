@@ -33,25 +33,11 @@ func setMenu() {
 	menuet.App().MenuChanged()
 }
 
-func menuItems(key string) []menuet.MenuItem {
+func menuItems(item menuet.MenuItem) []menuet.MenuItem {
 	celsius := menuet.Defaults().Boolean("celsius")
-	if key == "units" {
-		return []menuet.MenuItem{
-			{
-				Text:  "Fahrenheit",
-				Key:   "fahrenheit",
-				State: !celsius,
-			},
-			{
-				Text:  "Celsius",
-				Key:   "celsius",
-				State: celsius,
-			},
-		}
-	}
-	text := fmt.Sprintf("%.01f°C", lastTemp)
+	temperatureText := fmt.Sprintf("%.01f°C", lastTemp)
 	if !celsius {
-		text = fmt.Sprintf("%.01f°F", lastTemp*1.8+32)
+		temperatureText = fmt.Sprintf("%.01f°F", lastTemp*1.8+32)
 	}
 	throttleText := "Not throttled"
 	if lastCPULimit != 100 {
@@ -64,7 +50,7 @@ func menuItems(key string) []menuet.MenuItem {
 			FontSize: 9,
 		},
 		{
-			Text: text,
+			Text: temperatureText,
 		},
 		{
 			Text: throttleText,
@@ -91,13 +77,28 @@ func menuItems(key string) []menuet.MenuItem {
 		Type: menuet.Separator,
 	})
 	items = append(items, menuet.MenuItem{
-		Key:      "units",
-		Text:     "Units",
-		Children: true,
+		Text: "Units",
+		Children: func() []menuet.MenuItem {
+			return []menuet.MenuItem{
+				{
+					Text: "Fahrenheit",
+					Clicked: func() {
+						menuet.Defaults().SetBoolean("celsius", false)
+						setMenu()
+					},
+					State: !celsius,
+				},
+				{
+					Text: "Celsius",
+					Clicked: func() {
+						menuet.Defaults().SetBoolean("celsius", true)
+						setMenu()
+					},
+					State: celsius,
+				},
+			}
+		},
 	})
-	if lastCPULimit != 100 {
-		text += fmt.Sprintf(" %d%%", lastCPULimit)
-	}
 	return items
 }
 
@@ -154,17 +155,6 @@ func monitorThermalChanges(channel chan bool) {
 	}
 }
 
-func handleClick(clicked string) {
-	switch clicked {
-	case "celsius":
-		menuet.Defaults().SetBoolean("celsius", true)
-		setMenu()
-	case "fahrenheit":
-		menuet.Defaults().SetBoolean("celsius", false)
-		setMenu()
-	}
-}
-
 func main() {
 	thermalChannel := make(chan bool)
 	pmset.SubscribeThermalChanges(thermalChannel)
@@ -173,8 +163,7 @@ func main() {
 	app := menuet.App()
 	app.Name = "Not a Fan"
 	app.Label = "com.github.caseymrm.notafan"
-	app.Clicked = handleClick
-	app.MenuOpened = menuItems
+	app.Children = menuItems
 	app.AutoUpdate.Version = "v0.1"
 	app.AutoUpdate.Repo = "caseymrm/notafan"
 	app.RunApplication()
