@@ -33,7 +33,7 @@ func setMenu() {
 	menuet.App().MenuChanged()
 }
 
-func menuItems(item menuet.MenuItem) []menuet.MenuItem {
+func menuItems() []menuet.MenuItem {
 	celsius := menuet.Defaults().Boolean("celsius")
 	temperatureText := fmt.Sprintf("%.01f°C", lastTemp)
 	if !celsius {
