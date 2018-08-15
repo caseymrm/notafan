@@ -11,7 +11,12 @@ Not a Fan is an OSX menu bar app that monitors your CPU temperature and fan stat
 
 ## Screenshots
 
-TODO
+![CPU and Fans](https://github.com/caseymrm/notafan/raw/master/notafan.png)
+
+![Throttled](https://github.com/caseymrm/notafan/raw/master/throttled.png)
+
+![Not Throttled](https://github.com/caseymrm/notafan/raw/master/notthrottled.png)
+
 
 ## Built with
 
