@@ -13,15 +13,15 @@
   <key>CFBundleName</key>
   <string>NotAFan</string>
   <key>CFBundleShortVersionString</key>
-  <string>0.1</string>
+  <string>1.0.0</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>IFMajorVersion</key>
-  <integer>0</integer>
-  <key>IFMinorVersion</key>
   <integer>1</integer>
+  <key>IFMinorVersion</key>
+  <integer>0</integer>
   <key>NSHighResolutionCapable</key><true/>
   <key>NSSupportsAutomaticGraphicsSwitching</key><true/>
 </dict>

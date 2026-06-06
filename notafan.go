@@ -9,59 +9,58 @@ import (
 	"github.com/caseymrm/menuet"
 )
 
+func formatTemperature(tempC float64, celsius bool) string {
+	if celsius {
+		return fmt.Sprintf("%.01f°C", tempC)
+	}
+	return fmt.Sprintf("%.01f°F", tempC*1.8+32)
+}
+
+func averageFanSpeed(speeds []int) (avg int, ok bool) {
+	if len(speeds) == 0 {
+		return 0, false
+	}
+	sum := 0
+	for _, s := range speeds {
+		sum += s
+	}
+	return sum / len(speeds), true
+}
+
+func formatTitle(tempC float64, speeds []int, cpuLimit int, celsius bool) string {
+	title := formatTemperature(tempC, celsius)
+	if cpuLimit != 100 {
+		title += fmt.Sprintf(" %d%%", cpuLimit)
+	}
+	if avg, ok := averageFanSpeed(speeds); ok {
+		title += fmt.Sprintf(" %d", avg)
+	}
+	return title
+}
+
+func formatThrottleStatus(cpuLimit int) string {
+	if cpuLimit == 100 {
+		return "Not throttled"
+	}
+	return fmt.Sprintf("Throttled to %d%%", cpuLimit)
+}
+
 func setMenu() {
 	celsius := menuet.Defaults().Boolean("celsius")
-	text := fmt.Sprintf("%.01f°C", lastTemp)
-	if !celsius {
-		text = fmt.Sprintf("%.01f°F", lastTemp*1.8+32)
-	}
-	average := 0
-	for _, speed := range lastSpeeds {
-		average += speed
-	}
-	averageText := ""
-	if len(lastSpeeds) > 0 {
-		average = average / len(lastSpeeds)
-		averageText = fmt.Sprintf(" %d", average)
-	}
-	if lastCPULimit != 100 {
-		text += fmt.Sprintf(" %d%%", lastCPULimit)
-	}
 	menuet.App().SetMenuState(&menuet.MenuState{
-		Title: text + averageText,
+		Title: formatTitle(lastTemp, lastSpeeds, lastCPULimit, celsius),
 	})
 	menuet.App().MenuChanged()
 }
 
 func menuItems() []menuet.MenuItem {
 	celsius := menuet.Defaults().Boolean("celsius")
-	temperatureText := fmt.Sprintf("%.01f°C", lastTemp)
-	if !celsius {
-		temperatureText = fmt.Sprintf("%.01f°F", lastTemp*1.8+32)
-	}
-	throttleText := "Not throttled"
-	if lastCPULimit != 100 {
-		throttleText = fmt.Sprintf("Throttled to %d%%", lastCPULimit)
-
-	}
 	items := []menuet.MenuItem{
-		{
-			Text:     "CPU",
-			FontSize: 9,
-		},
-		{
-			Text: temperatureText,
-		},
-		{
-			Text: throttleText,
-		},
-		{
-			Type: menuet.Separator,
-		},
-		{
-			Text:     "Fan speeds",
-			FontSize: 9,
-		},
+		{Text: "CPU", FontSize: 9},
+		{Text: formatTemperature(lastTemp, celsius)},
+		{Text: formatThrottleStatus(lastCPULimit)},
+		{Type: menuet.Separator},
+		{Text: "Fan speeds", FontSize: 9},
 	}
 	for _, speed := range lastSpeeds {
 		items = append(items, menuet.MenuItem{
@@ -69,13 +68,9 @@ func menuItems() []menuet.MenuItem {
 		})
 	}
 	if len(lastSpeeds) == 0 {
-		items = append(items, menuet.MenuItem{
-			Text: fmt.Sprintf("No fans!"),
-		})
+		items = append(items, menuet.MenuItem{Text: "No fans!"})
 	}
-	items = append(items, menuet.MenuItem{
-		Type: menuet.Separator,
-	})
+	items = append(items, menuet.MenuItem{Type: menuet.Separator})
 	items = append(items, menuet.MenuItem{
 		Text: "Units",
 		Children: func() []menuet.MenuItem {
@@ -164,7 +159,7 @@ func main() {
 	app.Name = "Not a Fan"
 	app.Label = "com.github.caseymrm.notafan"
 	app.Children = menuItems
-	app.AutoUpdate.Version = "v0.1"
+	app.AutoUpdate.Version = "v1.0.0"
 	app.AutoUpdate.Repo = "caseymrm/notafan"
 	app.RunApplication()
 }
