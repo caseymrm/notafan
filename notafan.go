@@ -6,7 +6,7 @@ import (
 
 	"github.com/caseymrm/go-pmset"
 	smc "github.com/caseymrm/go-smc"
-	"github.com/caseymrm/menuet"
+	"github.com/caseymrm/menuet/v2"
 )
 
 func formatTemperature(tempC float64, celsius bool) string {
@@ -56,26 +56,26 @@ func setMenu() {
 func menuItems() []menuet.MenuItem {
 	celsius := menuet.Defaults().Boolean("celsius")
 	items := []menuet.MenuItem{
-		{Text: "CPU", FontSize: 9},
-		{Text: formatTemperature(lastTemp, celsius)},
-		{Text: formatThrottleStatus(lastCPULimit)},
-		{Type: menuet.Separator},
-		{Text: "Fan speeds", FontSize: 9},
+		menuet.Regular{Text: "CPU", FontSize: 9},
+		menuet.Regular{Text: formatTemperature(lastTemp, celsius)},
+		menuet.Regular{Text: formatThrottleStatus(lastCPULimit)},
+		menuet.Separator{},
+		menuet.Regular{Text: "Fan speeds", FontSize: 9},
 	}
 	for _, speed := range lastSpeeds {
-		items = append(items, menuet.MenuItem{
+		items = append(items, menuet.Regular{
 			Text: fmt.Sprintf("%d RPM", speed),
 		})
 	}
 	if len(lastSpeeds) == 0 {
-		items = append(items, menuet.MenuItem{Text: "No fans!"})
+		items = append(items, menuet.Regular{Text: "No fans!"})
 	}
-	items = append(items, menuet.MenuItem{Type: menuet.Separator})
-	items = append(items, menuet.MenuItem{
+	items = append(items, menuet.Separator{})
+	items = append(items, menuet.Regular{
 		Text: "Units",
 		Children: func() []menuet.MenuItem {
 			return []menuet.MenuItem{
-				{
+				menuet.Regular{
 					Text: "Fahrenheit",
 					Clicked: func() {
 						menuet.Defaults().SetBoolean("celsius", false)
@@ -83,7 +83,7 @@ func menuItems() []menuet.MenuItem {
 					},
 					State: !celsius,
 				},
-				{
+				menuet.Regular{
 					Text: "Celsius",
 					Clicked: func() {
 						menuet.Defaults().SetBoolean("celsius", true)
