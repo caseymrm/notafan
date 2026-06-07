@@ -1,6 +1,6 @@
 APP=NotAFan
 EXE=notafan
-VERSION=v1.0.0
+VERSION=v1.0.1
 IDENTITY=Developer ID Application: Rational Creation LLC (AP2AEA9WAW)
 IDENTIFIER=notafan.caseymrm.github.com
 
