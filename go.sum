@@ -6,3 +6,5 @@ github.com/caseymrm/go-smc v0.0.0-20260606234205-4a31024c8b63 h1:B135ig/cZdfSEEo
 github.com/caseymrm/go-smc v0.0.0-20260606234205-4a31024c8b63/go.mod h1:t/rpq4mwI5WzO0Yu8aG8kGmZECjV3G4amwoqBsWULUA=
 github.com/caseymrm/menuet/v2 v2.2.0 h1:8PBcc1N6dLnaPnM2JeH4ea/5TGdELRslTRrywqiqRUc=
 github.com/caseymrm/menuet/v2 v2.2.0/go.mod h1:fw/xps1icldZXguIGgsokmkVgGd51N1h+X6evRuPv8s=
+github.com/caseymrm/menuet/v2 v2.10.0 h1:MEaqxSWOEMRrwcZuSpAhnUCaWFev61E1q1H+jhJzYz8=
+github.com/caseymrm/menuet/v2 v2.10.0/go.mod h1:fw/xps1icldZXguIGgsokmkVgGd51N1h+X6evRuPv8s=

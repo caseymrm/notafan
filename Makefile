@@ -16,7 +16,7 @@ ARM64_MIN=11.0
 GO=go
 GOFLAGS=-trimpath -ldflags="-s -w"
 
-.PHONY: all amd64 arm64 universal app sign adhoc notarize zip release clean test
+.PHONY: all amd64 arm64 universal app sign adhoc notarize zip release clean test web-preview
 
 all: app
 
@@ -25,6 +25,14 @@ $(BUILD):
 
 test:
 	$(GO) test ./...
+
+# Capture a JSON snapshot of the running menu for the menuet.app showcase.
+# Override MENUET_SNAPSHOT_DELAY to give startup goroutines more time to
+# populate state (default is 2s).
+web-preview: $(BUILD)
+	$(GO) build $(GOFLAGS) -o $(BUILD)/$(EXE)-snapshot .
+	MENUET_SNAPSHOT_PATH=menuet-demo.json $(BUILD)/$(EXE)-snapshot
+	@echo "Wrote menuet-demo.json"
 
 amd64: $(BUILD)
 	CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 \
