@@ -1,0 +1,123 @@
+{
+  "schema": "menuet-snapshot/v1",
+  "state": {
+    "Title": "139.8°F 0% 0",
+    "Runs": null,
+    "Image": ""
+  },
+  "items": [
+    {
+      "type": "regular",
+      "text": "CPU",
+      "fontSize": 9,
+      "color": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 0
+      }
+    },
+    {
+      "type": "regular",
+      "text": "139.8°F",
+      "color": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 0
+      }
+    },
+    {
+      "type": "regular",
+      "text": "Throttled to 0%",
+      "color": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 0
+      }
+    },
+    {
+      "type": "separator",
+      "color": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 0
+      }
+    },
+    {
+      "type": "regular",
+      "text": "Fan speeds",
+      "fontSize": 9,
+      "color": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 0
+      }
+    },
+    {
+      "type": "regular",
+      "text": "0 RPM",
+      "color": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 0
+      }
+    },
+    {
+      "type": "regular",
+      "text": "0 RPM",
+      "color": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 0
+      }
+    },
+    {
+      "type": "separator",
+      "color": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 0
+      }
+    },
+    {
+      "type": "regular",
+      "text": "Units",
+      "color": {
+        "R": 0,
+        "G": 0,
+        "B": 0,
+        "A": 0
+      },
+      "children": [
+        {
+          "type": "regular",
+          "text": "Fahrenheit",
+          "color": {
+            "R": 0,
+            "G": 0,
+            "B": 0,
+            "A": 0
+          },
+          "state": true
+        },
+        {
+          "type": "regular",
+          "text": "Celsius",
+          "color": {
+            "R": 0,
+            "G": 0,
+            "B": 0,
+            "A": 0
+          }
+        }
+      ]
+    }
+  ]
+}
