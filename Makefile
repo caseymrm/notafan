@@ -1,7 +1,7 @@
 APP=NotAFan
 EXE=notafan
 VERSION=v1.0.1
-IDENTITY=Developer ID Application: Rational Creation LLC (AP2AEA9WAW)
+IDENTITY ?= Developer ID Application: Casey Muller (AZGE7WP274)
 IDENTIFIER=notafan.caseymrm.github.com
 
 SDK=$(shell xcrun --sdk macosx --show-sdk-path)
