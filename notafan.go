@@ -159,7 +159,7 @@ func main() {
 	app.Name = "Not a Fan"
 	app.Label = "com.github.caseymrm.notafan"
 	app.Children = menuItems
-	app.AutoUpdate.Version = "v1.0.1"
+	app.AutoUpdate.Version = "v1.1.0"
 	app.AutoUpdate.Repo = "caseymrm/notafan"
 	app.RunApplication()
 }
