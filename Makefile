@@ -1,6 +1,6 @@
 APP=NotAFan
 EXE=notafan
-VERSION=v1.0.1
+VERSION=v1.1.0
 IDENTITY ?= Developer ID Application: Casey Muller (AZGE7WP274)
 IDENTIFIER=notafan.caseymrm.github.com
 
@@ -74,7 +74,7 @@ notarize: sign zip
 
 release: zip
 	gh release create $(VERSION) $(BUILD)/$(APP).app.zip \
-	  --title "$(VERSION) — Apple Silicon universal build" \
+	  --title "$(VERSION)" \
 	  --notes-file RELEASE_NOTES.md
 
 clean:
